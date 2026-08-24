@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>清水河 · 引路灯 · 七月十四 子时</title>
+  <link rel="stylesheet" href="assets/css/y2k.css" />
+  <!--
+    引路灯词（口传，只传首字母）：h.d.z.s · h.g.g.l
+    河灯照水 · 魂归故里
+    诵全词，灯灭，魂归。若不诵，灯不灭，漂向你。
+  -->
+</head>
+<body data-page="night">
+  <div class="bubble-field"></div>
+  <div class="blood-flash" id="bloodFlash"></div>
+
+  <div class="page">
+    <div class="glass" style="padding:20px 18px 10px;text-align:center;">
+      <div class="site-title" style="font-size:30px;">清 水 河 · 引 路 灯</div>
+      <div class="site-sub" id="subtitle">七月十四 · 子时 · 河沿街 47 号 · 清水河渡口</div>
+      <div class="glitter-bar"></div>
+    </div>
+
+    <!-- 仪式区 -->
+    <div class="glass" style="margin-top:14px;padding:18px;text-align:center;">
+      <img id="lanternImg" src="assets/img/he_deng.jpg" alt="河灯"
+           style="max-width:380px;width:92%;border-radius:12px;border:3px solid #fff;box-shadow:0 4px 18px rgba(40,120,170,.5);" />
+      <p style="font-size:15px;line-height:2;margin-top:14px;color:var(--ink);">
+        河水很凉。一百只船九十九只写了名字，一只没有。<br />
+        档案上写着，要面河诵出<b>引路灯词</b>，灯才灭，魂才归。<br />
+        <span class="ghost-text">（灯词藏在她的主页、留言板、档案里——首字母是 h.d.z.s · h.g.g.l）</span>
+      </p>
+      <div style="margin-top:10px;">
+        <input class="y2k-input" id="word" placeholder="请输入灯词（如：河灯照水 魂归故里）" style="width:300px;max-width:90%;" />
+        <button class="y2k-submit" onclick="chant()" style="margin-left:8px;">诵 灯 词</button>
+      </div>
+      <div id="ritualMsg" style="font-size:14px;color:var(--ink-soft);margin-top:12px;min-height:22px;">水面很平静。</div>
+
+      <div style="margin-top:18px;">
+        <a href="javascript:void(0)" onclick="refuse()" style="font-size:13px;color:var(--ink-soft);text-decoration:underline dotted;">……我只是路过，我不引路。</a>
+      </div>
+    </div>
+
+    <div class="footer-y2k">
+      ◆ 月光小筑 · 清水河引路灯 ◆ <a href="index.html">回到小屋</a> ◆ <a href="archive.html">档案</a> ◆<br />
+      <span class="ghost-text">诵词请一次诵全，不要回头。</span>
+    </div>
+  </div>
+
+  <script src="assets/js/shared.js"></script>
+  <script>
+    window.__ms_console_notes = [
+      '%c清水河 · 引路灯',
+      'color:#2ea8d8;',
+      '灯词：河灯照水 · 魂归故里。',
+      '如果你不引路，河灯不会灭，它会漂向你。',
+      '她等了一百只船，等一个记住她的人。'
+    ];
+
+    const ACCEPT = [
+      '河灯照水魂归故里',
+      '河灯照水 魂归故里',
+      '河灯照水·魂归故里',
+      '河灯照水，魂归故里',
+      'hdzs hggl', 'h.d.z.s h.g.g.l', 'HDZS HGGL', 'H.D.Z.S H.G.G.L'
+    ];
+
+    function chant() {
+      const raw = document.getElementById('word').value.trim().toLowerCase()
+        .replace(/[，,。.·\s]/g, '');
+      const msg = document.getElementById('ritualMsg');
+      const isAccept = ACCEPT.some((a) => a.replace(/[，,。.·\s]/g, '').toLowerCase() === raw);
+
+      if (isAccept) {
+        endingA();
+      } else if (raw.length === 0) {
+        msg.innerHTML = '水面起了波纹。它等你开口。';
+      } else {
+        msg.innerHTML = '灯没有灭。水面倒映出……<b style="color:var(--blood);">你身后有个人</b>。';
+        document.body.classList.add('cursed');
+        setTimeout(() => document.body.classList.remove('cursed'), 900);
+      }
+    }
+
+    /* ── 结局 A：引路 · 安息 ── */
+    function endingA() {
+      const msg = document.getElementById('ritualMsg');
+      document.getElementById('subtitle').textContent = '灯灭了 · 风停了 · 天快亮了';
+      document.getElementById('word').style.display = 'none';
+      document.querySelector('.y2k-submit').style.display = 'none';
+      document.body.classList.remove('cursed');
+      msg.innerHTML = '';
+      document.getElementById('lanternImg').style.filter = 'sepia(.3) brightness(1.05)';
+
+      const lines = [
+        '……',
+        '水声停了。',
+        '那盏没名字的灯，晃了晃，灭了。',
+        '风从河面吹过来，很轻，像是有人在很远的地方，长长地舒了一口气。',
+        '',
+        '★ 管理员「念晚」上线 ★',
+        '……谢谢你，记得我。',
+        '奶奶的灯，我坐回去了。河灯照水，魂归故里。',
+        '别删我的主页，让它亮着吧——总还有人，需要一点光。',
+        '千禧年快乐。再见。',
+        '（本页最后更新：2003-08-11 23:47 · 已归档，不再更新）'
+      ];
+      let i = 0;
+      const timer = setInterval(() => {
+        if (i >= lines.length) {
+          clearInterval(timer);
+          msg.innerHTML += '<div style="margin-top:16px;"><a class="y2k-btn" href="index.html">回到安安静静的小屋</a></div>';
+          return;
+        }
+        const p = document.createElement('div');
+        p.style.cssText = 'line-height:2;font-size:15px;margin:2px 0;color:var(--ink);';
+        p.textContent = lines[i];
+        msg.appendChild(p);
+        i++;
+      }, 650);
+    }
+
+    /* ── 结局 B：不引路 · 滞留 ── */
+    function refuse() {
+      const msg = document.getElementById('ritualMsg');
+      document.getElementById('subtitle').textContent = '灯没有灭 · 它漂向你 · 水面起了雾';
+      document.body.classList.add('cursed');
+      const flash = document.getElementById('bloodFlash');
+      flash.textContent = '七 月 半 你 也 会 回 来 的';
+      flash.classList.add('show');
+
+      msg.innerHTML = '';
+      const lines = [
+        '你转身要走。',
+        '可水声没有停。',
+        '那只没写名字的灯，不灭，不沉，一路漂向你的岸边。',
+        '你听见有人在你耳边，很轻很轻地，叫了一个名字——',
+        '那不是你的名字。',
+        '但那个声音，好像认得你。',
+        '★ 一只没有名字的灯 ★：你不引路，我就一直回。',
+        '★ 一只没有名字的灯 ★：总有一天，你会应我的名字。',
+        '（本页仍在更新。它不会停。）'
+      ];
+      let i = 0;
+      const timer = setInterval(() => {
+        if (i >= lines.length) {
+          clearInterval(timer);
+          msg.innerHTML += '<div style="margin-top:16px;color:var(--blood);">网页异常。请关闭本页。请不要在深夜重新打开。</div>';
+          return;
+        }
+        const p = document.createElement('div');
+        p.style.cssText = 'line-height:2;font-size:15px;margin:2px 0;color:var(--blood);letter-spacing:1px;';
+        p.textContent = lines[i];
+        msg.appendChild(p);
+        i++;
+      }, 800);
+      console.log('%c你选了不引路。', 'color:#b01224;font-size:16px;font-weight:bold;');
+      console.log('%c它会一直记得你。七月半，你也回来。', 'color:#b01224;font-size:14px;');
+    }
+  </script>
+</body>
+</html>
