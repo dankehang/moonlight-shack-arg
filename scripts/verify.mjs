@@ -37,7 +37,14 @@ for (const p of PAGES) {
   await page.goto(`${BASE}/${p}`, { waitUntil: 'load' });
   const hrefs = await page.$$eval('a[href]', (as) => as.map((a) => a.getAttribute('href')));
   for (const h of hrefs) {
-    if (h && h.startsWith('/') && !h.startsWith('//')) links.add(BASE + h.split('#')[0]);
+    if (!h) continue;
+    const clean = h.split('#')[0];
+    if (!clean) continue;
+    if (clean.startsWith('/')) {
+      if (!clean.startsWith('//')) links.add(BASE + clean);
+    } else if (!/^(https?:|javascript:|mailto:|tel:)/.test(clean)) {
+      links.add(new URL(clean, BASE).href);
+    }
   }
 }
 let broken = 0;
@@ -65,7 +72,7 @@ await page.fill('#word', '河灯照水 魂归故里');
 await page.click('button:has-text("诵 灯 词")');
 await page.waitForTimeout(1500);
 const endingA = await page.evaluate(() => document.getElementById('ritualMsg').innerText);
-results.push(`PUZZLE night 结局A -> ${endingA.includes('谢谢') ? 'OK' : 'CHECK: ' + endingA.slice(0, 40)}`);
+results.push(`PUZZLE night 结局A -> ${endingA.includes('水声停了') ? 'OK' : 'CHECK: ' + endingA.slice(0, 40)}`);
 await page.screenshot({ path: `${SHOTS}/night-endingA.png` });
 
 // 5) 谜题流：结局 B（拒绝）
@@ -73,7 +80,7 @@ await page.goto(`${BASE}/night.html`, { waitUntil: 'load' });
 await page.click('a:has-text("我不引路")');
 await page.waitForTimeout(1500);
 const endingB = await page.evaluate(() => document.getElementById('ritualMsg').innerText);
-results.push(`PUZZLE night 结局B -> ${endingB.includes('一直回') ? 'OK' : 'CHECK: ' + endingB.slice(0, 40)}`);
+results.push(`PUZZLE night 结局B -> ${endingB.includes('你转身要走') ? 'OK' : 'CHECK: ' + endingB.slice(0, 40)}`);
 await page.screenshot({ path: `${SHOTS}/night-endingB.png` });
 
 // 6) 谜题流：相册第七张
