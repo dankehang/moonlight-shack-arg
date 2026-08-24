@@ -24,7 +24,7 @@ const results = [];
 
 // 1) 每页加载 + 截图 + 收集错误
 for (const p of PAGES) {
-  await page.goto(`${BASE}/${p}`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}/${p}`, { waitUntil: 'load' });
   await page.waitForTimeout(300);
   await page.screenshot({ path: `${SHOTS}/${p}.png`, fullPage: false });
   const title = await page.title();
@@ -34,7 +34,7 @@ for (const p of PAGES) {
 // 2) 检查所有站内链接是否 200
 const links = new Set();
 for (const p of PAGES) {
-  await page.goto(`${BASE}/${p}`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}/${p}`, { waitUntil: 'load' });
   const hrefs = await page.$$eval('a[href]', (as) => as.map((a) => a.getAttribute('href')));
   for (const h of hrefs) {
     if (h && h.startsWith('/') && !h.startsWith('//')) links.add(BASE + h.split('#')[0]);
@@ -51,7 +51,7 @@ for (const u of links) {
 results.push(`LINKS checked: ${links.size} (${broken} broken)`);
 
 // 3) 谜题流：档案 JZ-0714
-await page.goto(`${BASE}/archive.html`, { waitUntil: 'networkidle' });
+await page.goto(`${BASE}/archive.html`, { waitUntil: 'load' });
 await page.fill('#caseId', 'JZ-0714');
 await page.click('button:has-text("查 询")');
 await page.waitForTimeout(300);
@@ -60,7 +60,7 @@ results.push(`PUZZLE archive JZ-0714 unlock -> ${secretVisible ? 'OK' : 'FAIL'}`
 await page.screenshot({ path: `${SHOTS}/archive-unlocked.png` });
 
 // 4) 谜题流：结局 A（正确灯词）
-await page.goto(`${BASE}/night.html`, { waitUntil: 'networkidle' });
+await page.goto(`${BASE}/night.html`, { waitUntil: 'load' });
 await page.fill('#word', '河灯照水 魂归故里');
 await page.click('button:has-text("诵 灯 词")');
 await page.waitForTimeout(1500);
@@ -69,7 +69,7 @@ results.push(`PUZZLE night 结局A -> ${endingA.includes('谢谢') ? 'OK' : 'CHE
 await page.screenshot({ path: `${SHOTS}/night-endingA.png` });
 
 // 5) 谜题流：结局 B（拒绝）
-await page.goto(`${BASE}/night.html`, { waitUntil: 'networkidle' });
+await page.goto(`${BASE}/night.html`, { waitUntil: 'load' });
 await page.click('a:has-text("我不引路")');
 await page.waitForTimeout(1500);
 const endingB = await page.evaluate(() => document.getElementById('ritualMsg').innerText);
@@ -77,7 +77,7 @@ results.push(`PUZZLE night 结局B -> ${endingB.includes('一直回') ? 'OK' : '
 await page.screenshot({ path: `${SHOTS}/night-endingB.png` });
 
 // 6) 谜题流：相册第七张
-await page.goto(`${BASE}/gallery.html`, { waitUntil: 'networkidle' });
+await page.goto(`${BASE}/gallery.html`, { waitUntil: 'load' });
 await page.click('#photo7');
 await page.waitForTimeout(200);
 const p7 = await page.isVisible('#photo7Modal');
@@ -85,7 +85,7 @@ results.push(`PUZZLE gallery photo7 modal -> ${p7 ? 'OK' : 'FAIL'}`);
 await page.screenshot({ path: `${SHOTS}/gallery-photo7.png` });
 
 // 7) 谜题流：留言板灯词
-await page.goto(`${BASE}/guestbook.html`, { waitUntil: 'networkidle' });
+await page.goto(`${BASE}/guestbook.html`, { waitUntil: 'load' });
 await page.fill('#gbMsg', '河灯照水 魂归故里');
 await page.click('button:has-text("发送留言")');
 await page.waitForTimeout(200);
@@ -94,7 +94,7 @@ results.push(`PUZZLE guestbook 灯词 -> ${gb.includes('去河边') ? 'OK' : 'CH
 
 // 8) 截图各站首屏，供人工检查视觉
 for (const p of PAGES) {
-  await page.goto(`${BASE}/${p}`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}/${p}`, { waitUntil: 'load' });
   await page.waitForTimeout(250);
   await page.screenshot({ path: `${SHOTS}/shot-${p}.png`, fullPage: false });
 }
